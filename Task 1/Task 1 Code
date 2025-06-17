@@ -1,0 +1,13 @@
+library(ggplot2)
+
+data <- read.csv("sample_population_data.csv")
+
+ggplot(data, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
+  labs(title = "Age Distribution", x = "Age", y = "Count") +
+  theme_minimal()
+
+ggplot(data, aes(x = Gender)) +
+  geom_bar(fill = "orange", color = "black") +
+  labs(title = "Gender Distribution", x = "Gender", y = "Count") +
+  theme_minimal()

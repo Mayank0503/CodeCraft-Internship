@@ -1,0 +1,20 @@
+FINDINGS:
+        1-Gender and Survival:
+          i)Females had a significantly higher survival rate than males.
+          ii)This suggests that during evacuation, women were prioritized (aligns with historical "women and children first" policy).
+
+        2-Passenger Class and Survival:
+          i)Passengers from 1st class had the highest survival rate.
+          ii)3rd class passengers had the lowest survival, indicating that socio-economic status played a major role in survival.
+
+        3-Fare and Survival:
+          i)Passengers who paid higher fares were more likely to survive.
+          ii)This supports the idea that wealthier individuals (often in 1st class) had better access to lifeboats.
+
+        4-Age Distribution:
+          i)The dataset includes passengers from a wide range of ages.
+          ii)No clear trend was found between age and survival overall, though very young children had slightly better chances.
+
+Survival was not random — it was strongly influenced by gender, class, and fare.
+
+These factors reflect the social and economic inequalities of the time.

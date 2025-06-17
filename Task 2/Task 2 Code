@@ -1,0 +1,49 @@
+library(tidyverse)
+
+df <- read.csv("train_and_test2.csv")
+
+colnames(df)
+
+#Remove unnecessary columns (those starting with "zero")
+df_cleaned <- df %>% select(-starts_with("zero"))
+
+#Rename confusing column name
+df_cleaned <- df_cleaned %>% rename(Survived = `X2urvived`)
+
+str(df_cleaned)
+colSums(is.na(df_cleaned))
+
+df_cleaned$Sex <- factor(df_cleaned$Sex, labels = c("Male", "Female"))
+df_cleaned$Embarked <- factor(df_cleaned$Embarked, labels = c("C", "Q", "S"))
+df_cleaned$Pclass <- as.factor(df_cleaned$Pclass)
+df_cleaned$Survived <- as.factor(df_cleaned$Survived)
+
+summary(df_cleaned)
+
+
+# 1. Survival count
+ggplot(df_cleaned, aes(x = Survived)) +
+  geom_bar(fill = "skyblue") +
+  ggtitle("Survival Count") +
+  xlab("Survived") +
+  ylab("Count")
+
+# 2. Survival by Sex
+ggplot(df_cleaned, aes(x = Sex, fill = Survived)) +
+  geom_bar(position = "dodge") +
+  ggtitle("Survival by Sex")
+
+# 3. Survival by Passenger Class
+ggplot(df_cleaned, aes(x = Pclass, fill = Survived)) +
+  geom_bar(position = "dodge") +
+  ggtitle("Survival by Passenger Class")
+
+# 4. Age Distribution
+ggplot(df_cleaned, aes(x = Age)) +
+  geom_histogram(bins = 30, fill = "coral", color = "black") +
+  ggtitle("Age Distribution")
+
+# 5. Fare vs Survival (Boxplot)
+ggplot(df_cleaned, aes(x = Survived, y = Fare, fill = Survived)) +
+  geom_boxplot() +
+  ggtitle("Fare Distribution by Survival")

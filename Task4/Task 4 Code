@@ -1,0 +1,51 @@
+install.packages(c("tidyverse", "tidytext", "textdata", "wordcloud", "RColorBrewer"))
+
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(wordcloud)
+library(RColorBrewer)
+
+df <- read.csv("twitter_training.csv", header = FALSE, stringsAsFactors = FALSE)
+
+colnames(df) <- c("id", "entity", "sentiment", "text")
+
+head(df)
+
+df_clean <- df %>%
+  filter(!is.na(text)) %>%
+  mutate(
+    text = tolower(text),
+    text = gsub("http\\S+|@\\w+|#[A-Za-z0-9_]+|[^a-z\\s]", "", text),
+    text = gsub("\\s+", " ", text)
+  )
+
+ggplot(df_clean, aes(x = sentiment, fill = sentiment)) +
+  geom_bar() +
+  theme_minimal() +
+  labs(title = "Sentiment Distribution in Tweets",
+       x = "Sentiment", y = "Count") +
+  scale_fill_brewer(palette = "Set2")
+
+# Tokenize and remove stopwords
+tokens <- df_clean %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words)
+
+# Top words per sentiment
+top_words <- tokens %>%
+  count(sentiment, word, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  top_n(100)
+
+# Wordcloud for each sentiment
+sentiments <- unique(df_clean$sentiment)
+
+par(mfrow = c(1, length(sentiments)))  # one cloud per sentiment
+
+for (s in sentiments) {
+  words <- top_words %>% filter(sentiment == s)
+  wordcloud(words$word, words$n,
+            max.words = 100, colors = brewer.pal(8, "Dark2"),
+            main = paste("Wordcloud -", s))
+}

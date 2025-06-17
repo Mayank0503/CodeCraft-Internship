@@ -1,0 +1,58 @@
+install.packages(c("tidyverse", "lubridate", "hms"), dependencies = TRUE)
+install.packages("lubridate")
+library(lubridate)
+library(tidyverse)
+library(lubridate)
+library(hms)
+
+df <- read.csv("RTA Dataset.csv", stringsAsFactors = FALSE)
+
+df$Hour <- hour(hms::as_hms(df$Time))
+df <- df %>%
+  filter(!is.na(Accident_severity)) %>%
+  mutate(
+    Age_band_of_driver = as.factor(Age_band_of_driver),
+    Sex_of_driver = as.factor(Sex_of_driver),
+    Type_of_vehicle = as.factor(Type_of_vehicle),
+    Cause_of_accident = as.factor(Cause_of_accident),
+    Day_of_week = factor(Day_of_week, 
+                         levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")),
+    Accident_severity = factor(Accident_severity, 
+                               levels = c("Slight Injury", "Serious Injury", "Fatal Injury"))
+  )
+
+# Visualization 1: Accident Severity vs Time of Day
+ggplot(df, aes(x = Hour, fill = Accident_severity)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Accident Severity by Hour of Day", x = "Hour", y = "Number of Accidents") +
+  theme_minimal()
+
+# Visualization 2: Driver Age Group vs Severity
+ggplot(df, aes(x = Age_band_of_driver, fill = Accident_severity)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Driver Age Band vs Accident Severity", x = "Age Band", y = "Count") +
+  theme_minimal()
+
+# Visualization 3: Cause of Accident
+top_causes <- df %>%
+  count(Cause_of_accident, sort = TRUE) %>%
+  top_n(10)
+
+ggplot(top_causes, aes(x = reorder(Cause_of_accident, n), y = n)) +
+  geom_bar(stat = "identity", fill = "darkred") +
+  coord_flip() +
+  labs(title = "Top 10 Causes of Accidents", x = "Cause", y = "Number of Accidents") +
+  theme_minimal()
+
+# Visualization 4: Accidents by Day of Week
+ggplot(df, aes(x = Day_of_week, fill = Accident_severity)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Accidents by Day of Week", x = "Day", y = "Accidents") +
+  theme_minimal()
+
+# Visualization 5: Vehicle Type Involved in Accidents
+ggplot(df, aes(x = Type_of_vehicle, fill = Accident_severity)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Vehicle Types vs Accident Severity", x = "Vehicle Type", y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme_minimal()
